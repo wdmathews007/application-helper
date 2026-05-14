@@ -65,6 +65,7 @@ public class ApplicationsController : ControllerBase
         existingApplication.DateApplied = application.DateApplied;
         existingApplication.JobDescriptionUrl = application.JobDescriptionUrl;
         existingApplication.FollowUpDate = application.FollowUpDate;
+        existingApplication.ResumeId = application.ResumeId;
 
         return Ok(existingApplication); // Returns a 200 OK response with the updated item
     }

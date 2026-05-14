@@ -10,6 +10,10 @@ public class Application
     public string? JobDescriptionUrl { get; set; }
     public DateTime? FollowUpDate { get; set; }
 
+    // Foreign Key linking to the Resume used
+    public int? ResumeId { get; set; }
+    public Resume? Resume { get; set; }
+
     // Navigation property: An application can have many interactions
     public List<Interaction> Interactions { get; set; } = new();
 }
