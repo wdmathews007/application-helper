@@ -1,5 +1,7 @@
 using ApplicationTracker.Models;
+using ApplicationTracker.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationTracker.Controllers;
 
@@ -7,30 +9,24 @@ namespace ApplicationTracker.Controllers;
 [Route("api/[controller]")]
 public class ApplicationsController : ControllerBase
 {
-    // This is a temporary in-memory list for testing.
-    // We will replace this with a real SQL database later.
-    private static readonly List<Application> _applications = new()
+    private readonly ApplicationDbContext _context;
+
+    public ApplicationsController(ApplicationDbContext context)
     {
-        new Application
-        {
-            Id = 1,
-            CompanyName = "Tech Solutions Inc.",
-            Role = "Software Engineer",
-            DateApplied = DateTime.UtcNow.AddDays(-10)
-        }
-    };
+        _context = context;
+    }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Application>> GetApplications()
+    public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
     {
-        return Ok(_applications);
+        return Ok(await _context.Applications.ToListAsync());
     }
 
     // GET: api/Applications/5
     [HttpGet("{id}")]
-    public ActionResult<Application> GetApplication(int id)
+    public async Task<ActionResult<Application>> GetApplication(int id)
     {
-        var application = _applications.FirstOrDefault(a => a.Id == id);
+        var application = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id);
 
         if (application == null)
         {
@@ -41,17 +37,17 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Application> CreateApplication(Application application)
+    public async Task<ActionResult<Application>> CreateApplication(Application application)
     {
-        application.Id = _applications.Count > 0 ? _applications.Max(a => a.Id) + 1 : 1;
-        _applications.Add(application);
+        _context.Applications.Add(application);
+        await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetApplication), new { id = application.Id }, application);
     }
 
     [HttpPut("{id}")]
-    public ActionResult<Application> UpdateApplication(int id, Application application)
+    public async Task<ActionResult<Application>> UpdateApplication(int id, Application application)
     {
-        var existingApplication = _applications.FirstOrDefault(a => a.Id == id);
+        var existingApplication = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id);
 
         if (existingApplication == null)
         {
@@ -67,20 +63,23 @@ public class ApplicationsController : ControllerBase
         existingApplication.FollowUpDate = application.FollowUpDate;
         existingApplication.ResumeId = application.ResumeId;
 
+        await _context.SaveChangesAsync();
+
         return Ok(existingApplication); // Returns a 200 OK response with the updated item
     }
 
     [HttpDelete("{id}")]
-    public ActionResult DeleteApplication(int id)
+    public async Task<ActionResult> DeleteApplication(int id)
     {
-        var application = _applications.FirstOrDefault(a => a.Id == id);
+        var application = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id);
 
         if (application == null)
         {
             return NotFound(); // Returns a 404 Not Found response
         }
 
-        _applications.Remove(application);
+        _context.Applications.Remove(application);
+        await _context.SaveChangesAsync();
         return NoContent(); // Returns a 204 No Content response
     }
 }
