@@ -2,11 +2,13 @@ using ApplicationTracker.Models;
 using ApplicationTracker.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApplicationTracker.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ApplicationsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
