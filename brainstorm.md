@@ -6,8 +6,9 @@ Why it works: You can speak to every product decision authentically because you'
 Tech buzzwords im trying to meet:
 .NET, C#, SQL
 Cloud (Azure, AWS, GCP), Git, Agile, RESTful API, CI/CD
-Front End (javascript, HTML, CSS)
-ASP.NET
+Security (JWT, Authentication/Authorization, ASP.NET Core Identity)
+Front End (React, JavaScript, HTML, CSS)
+ASP.NET, Desktop (Electron / .NET MAUI)
 Nice to Have: DevOps, RabbitMQ, Cross-Functional
 
 ## Implementation Checklist
@@ -15,13 +16,14 @@ Nice to Have: DevOps, RabbitMQ, Cross-Functional
 ### Phase 1: Core API (MVP) - [C#, .NET, ASP.NET, RESTful API, Git, SQL]
 - [x] Initialize ASP.NET Core Web API project
 - [x] Define `Application` and `Interaction` data models
-- [ ] Create RESTful `ApplicationsController` endpoints (GET, POST, PUT, DELETE)
-- [ ] Set up Entity Framework Core for data access
-- [ ] Create EF Core migrations and connect to a local SQL database
-- [ ] Push source code to GitHub (Start using GitHub Issues for Agile tracking)
+- [x] Create RESTful `ApplicationsController` endpoints (GET, POST, PUT, DELETE)
+- [x] Set up Entity Framework Core for data access
+- [x] Create EF Core migrations and connect to a local SQL database
+- [x] Implement ASP.NET Core Identity & JWT Authentication
+- [x] Push source code to GitHub (Start using GitHub Issues for Agile tracking)
 
 ### Phase 2: Full-Stack & Cloud - [Front End, Cloud (Azure)]
-- [ ] Build a simple frontend dashboard (HTML, CSS, Vanilla JS)
+- [ ] Build a frontend dashboard (React, Vite, CSS)
 - [ ] Connect frontend to the ASP.NET Core API (Configure CORS)
 - [ ] Provision Azure App Service and Azure SQL Database
 - [ ] Deploy API and Database to Azure
@@ -31,3 +33,13 @@ Nice to Have: DevOps, RabbitMQ, Cross-Functional
 - [ ] Expand GitHub Actions to automatically deploy to Azure on merge to main (CD)
 - [ ] Implement RabbitMQ queue for asynchronous job description web scraping
 - [ ] Create a scheduled worker (Azure Function) for follow-up reminders
+
+### Phase 4: Resume Templating Engine (Bonus) - [OpenXML, Document Generation]
+- [x] Build backend upload/download endpoints for PDFs and DOCXs
+- [ ] Integrate `DocumentFormat.OpenXml` to parse uploaded DOCX files
+- [ ] Create an endpoint to accept variables (e.g. `{{Location}}`) and return a customized DOCX download
+
+### Phase 5: Desktop Widget (Bonus) - [Electron / .NET MAUI]
+- [ ] Choose a desktop framework (Electron to reuse React, or .NET MAUI for C#)
+- [ ] Build a lightweight system tray widget to quickly log new applications
+- [ ] Connect the widget to the secure ASP.NET Core API

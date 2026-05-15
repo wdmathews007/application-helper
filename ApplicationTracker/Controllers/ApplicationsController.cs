@@ -43,6 +43,17 @@ public class ApplicationsController : ControllerBase
     {
         _context.Applications.Add(application);
         await _context.SaveChangesAsync();
+
+        var interaction = new Interaction
+        {
+            ApplicationId = application.Id,
+            InteractionDate = application.DateApplied,
+            Type = "Applied",
+            Notes = "Initial application submitted."
+        };
+        _context.Interactions.Add(interaction);
+        await _context.SaveChangesAsync();
+
         return CreatedAtAction(nameof(GetApplication), new { id = application.Id }, application);
     }
 
