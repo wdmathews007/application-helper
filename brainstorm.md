@@ -23,10 +23,10 @@ Nice to Have: DevOps, RabbitMQ, Cross-Functional
 - [x] Push source code to GitHub (Start using GitHub Issues for Agile tracking)
 
 ### Phase 2: Full-Stack & Cloud - [Front End, Cloud (Azure)]
-- [ ] Build a frontend dashboard (React, Vite, CSS)
-- [ ] Connect frontend to the ASP.NET Core API (Configure CORS)
-- [ ] Provision Azure App Service and Azure SQL Database
-- [ ] Deploy API and Database to Azure
+- [x] Build a frontend dashboard (React, Vite, CSS)
+- [x] Connect frontend to the ASP.NET Core API (Configure CORS)
+- [x] Provision Azure App Service and Azure SQL Database
+- [x] Deploy API and Database to Azure
 
 ### Phase 3: DevOps & Automation - [CI/CD, DevOps, RabbitMQ]
 - [ ] Create a GitHub Actions workflow to build and test code on push (CI)
@@ -39,7 +39,7 @@ Nice to Have: DevOps, RabbitMQ, Cross-Functional
 - [ ] Integrate `DocumentFormat.OpenXml` to parse uploaded DOCX files
 - [ ] Create an endpoint to accept variables (e.g. `{{Location}}`) and return a customized DOCX download
 
-### Phase 5: Desktop Widget (Bonus) - [Electron / .NET MAUI]
-- [ ] Choose a desktop framework (Electron to reuse React, or .NET MAUI for C#)
-- [ ] Build a lightweight system tray widget to quickly log new applications
-- [ ] Connect the widget to the secure ASP.NET Core API
+### Phase 5: Desktop Widget - [Electron]
+- [x] Choose a desktop framework (Electron to reuse React)
+- [x] Build a lightweight system tray widget to quickly log new applications
+- [x] Connect the widget to the secure ASP.NET Core API
