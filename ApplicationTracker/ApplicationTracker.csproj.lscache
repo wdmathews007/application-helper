@@ -63,12 +63,8 @@ Controllers/
  ResumesController.cs
 data/ApplicationDbContext.cs
 Migrations/
- 20260514204721_InitialCreate.cs
- 20260514204721_InitialCreate.Designer.cs
- 20260514210332_AddIdentity.cs
- 20260514210332_AddIdentity.Designer.cs
- 20260516172352_AddUserIsolation.cs
- 20260516172352_AddUserIsolation.Designer.cs
+ 20260516175457_InitialCreate.cs
+ 20260516175457_InitialCreate.Designer.cs
  ApplicationDbContextModelSnapshot.cs
 Models/
  Application.cs
