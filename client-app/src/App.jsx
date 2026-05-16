@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import api from './api';
 import Dashboard from './Dashboard';
 
@@ -129,6 +129,10 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  useEffect(() => {
+    document.title = "Application Tracker";
+  }, []);
+
   return (
     <Router>
       <Routes>

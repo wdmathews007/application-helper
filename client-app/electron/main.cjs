@@ -11,9 +11,13 @@ function createWindow() {
   const windowWidth = 450;
   const windowHeight = 750;
 
+  const iconPath = path.join(__dirname, app.isPackaged ? '../dist/favicon.ico' : '../public/favicon.ico');
+
   mainWindow = new BrowserWindow({
     width: windowWidth,
     height: windowHeight,
+    title: 'Application Tracker',
+    icon: iconPath,
     x: width - windowWidth - 20, // 20px padding from the right edge
     y: Math.round((height - windowHeight) / 2), // Centered vertically
     show: false, // Don't show immediately on load
@@ -35,9 +39,8 @@ function createWindow() {
 }
 
 function createTray() {
-  // Create a simple 16x16 blue square icon for the system tray (using base64 so we don't need an external file)
-  const iconBase64 = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZKAQMFKon2HUAAYahoH/Q+phAmhmAANtMwpGwygZRsMoGUbDKBkGDAwAAPnLAwF1qJ9EAAAAAElFTkSuQmCC';
-  const icon = nativeImage.createFromDataURL(`data:image/png;base64,${iconBase64}`);
+  const iconPath = path.join(__dirname, app.isPackaged ? '../dist/favicon.ico' : '../public/favicon.ico');
+  const icon = nativeImage.createFromPath(iconPath);
   
   tray = new Tray(icon);
   tray.setToolTip('Application Tracker');
