@@ -30,6 +30,7 @@ public class AuthController : ControllerBase
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
@@ -50,5 +51,31 @@ public class AuthController : ControllerBase
             });
         }
         return Unauthorized();
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] LoginDto model)
+    {
+        var userExists = await _userManager.FindByEmailAsync(model.Email);
+        if (userExists != null)
+        {
+            return BadRequest(new { message = "User already exists!" });
+        }
+
+        var user = new IdentityUser
+        {
+            Email = model.Email,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            UserName = model.Email // Use Email as the username
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(" ", result.Errors.Select(e => e.Description));
+            return BadRequest(new { message = $"Registration failed: {errors}" });
+        }
+
+        return Ok(new { message = "User created successfully!" });
     }
 }

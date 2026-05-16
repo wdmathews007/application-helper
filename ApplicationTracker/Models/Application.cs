@@ -16,4 +16,6 @@ public class Application
 
     // Navigation property: An application can have many interactions
     public List<Interaction> Interactions { get; set; } = new();
+
+    public string? UserId { get; set; }
 }

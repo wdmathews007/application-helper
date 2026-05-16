@@ -53,40 +53,66 @@ const styles = {
 function Login() {
   const navigate = useNavigate();
   
-  const [email, setEmail] = useState('admin@example.com'); 
-  const [password, setPassword] = useState('SuperSecret123!');
+  const [email, setEmail] = useState(''); 
+  const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoginMode, setIsLoginMode] = useState(true);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the browser from refreshing the page
     
     try {
-      const response = await api.post('/auth/login', {
+      const endpoint = isLoginMode ? '/auth/login' : '/auth/register';
+      const response = await api.post(endpoint, {
         email: email,
         password: password
       });
 
-      const token = response.data.token;
-      localStorage.setItem('token', token);
-
-      // Navigate to the dashboard on successful login!
-      navigate('/'); 
+      if (response.data.token) {
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        // Navigate to the dashboard on successful login!
+        navigate('/'); 
+      } else if (!isLoginMode) {
+        // If the backend doesn't return a token on register, ask them to log in
+        setMessage('Registration successful! You can now log in.');
+        setIsLoginMode(true);
+      }
     } catch (error) {
       console.error(error);
-      setMessage('Login failed. Check your credentials.');
+      const errorMsg = error.response?.data?.message || `${isLoginMode ? 'Login' : 'Registration'} failed. Check your credentials.`;
+      setMessage(errorMsg);
     }
   };
 
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Application Tracker</h1>
-      <h2 style={styles.subtitle}>Login</h2>
+      <h2 style={styles.subtitle}>{isLoginMode ? 'Login' : 'Register'}</h2>
       
-      <form onSubmit={handleLogin} style={styles.form}>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={styles.input} />
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={styles.input} />
-        <button type="submit" style={styles.button}>Login</button>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <input 
+          type="email" 
+          placeholder="Email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          required 
+          style={styles.input} 
+        />
+        <input 
+          type="password" 
+          placeholder="Password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          required 
+          style={styles.input} 
+        />
+        <button type="submit" style={styles.button}>{isLoginMode ? 'Login' : 'Register'}</button>
       </form>
+
+      <p style={{ marginTop: '20px', cursor: 'pointer', textDecoration: 'underline', color: '#7dd3fc' }} onClick={() => setIsLoginMode(!isLoginMode)}>
+        {isLoginMode ? "Don't have an account? Register here." : "Already have an account? Log in."}
+      </p>
 
       {message && (
         <p style={styles.message}>{message}</p>

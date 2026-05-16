@@ -9,4 +9,6 @@ public class Resume
 
     // Navigation property: One resume can be used for many applications
     public List<Application> Applications { get; set; } = new();
+
+    public string? UserId { get; set; }
 }

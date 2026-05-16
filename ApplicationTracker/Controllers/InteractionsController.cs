@@ -3,6 +3,7 @@ using ApplicationTracker.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ApplicationTracker.Controllers;
 
@@ -21,13 +22,15 @@ public class InteractionsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Interaction>>> GetInteractions()
     {
-        return Ok(await _context.Interactions.ToListAsync());
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Ok(await _context.Interactions.Where(i => i.UserId == userId).ToListAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Interaction>> GetInteraction(int id)
     {
-        var interaction = await _context.Interactions.FirstOrDefaultAsync(i => i.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var interaction = await _context.Interactions.FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId);
 
         if (interaction == null)
         {
@@ -40,6 +43,9 @@ public class InteractionsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Interaction>> CreateInteraction(Interaction interaction)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        interaction.UserId = userId;
+
         _context.Interactions.Add(interaction);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetInteraction), new { id = interaction.Id }, interaction);
@@ -48,7 +54,8 @@ public class InteractionsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Interaction>> UpdateInteraction(int id, Interaction interaction)
     {
-        var existingInteraction = await _context.Interactions.FirstOrDefaultAsync(i => i.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var existingInteraction = await _context.Interactions.FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId);
 
         if (existingInteraction == null)
         {
@@ -68,7 +75,8 @@ public class InteractionsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteInteraction(int id)
     {
-        var interaction = await _context.Interactions.FirstOrDefaultAsync(i => i.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var interaction = await _context.Interactions.FirstOrDefaultAsync(i => i.Id == id && i.UserId == userId);
 
         if (interaction == null)
         {

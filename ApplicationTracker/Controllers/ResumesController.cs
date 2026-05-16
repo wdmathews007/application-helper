@@ -3,6 +3,7 @@ using ApplicationTracker.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ApplicationTracker.Controllers;
 
@@ -21,13 +22,15 @@ public class ResumesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Resume>>> GetResumes()
     {
-        return Ok(await _context.Resumes.ToListAsync());
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Ok(await _context.Resumes.Where(r => r.UserId == userId).ToListAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Resume>> GetResume(int id)
     {
-        var resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
         if (resume == null)
         {
@@ -40,6 +43,9 @@ public class ResumesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Resume>> CreateResume(Resume resume)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        resume.UserId = userId;
+
         _context.Resumes.Add(resume);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetResume), new { id = resume.Id }, resume);
@@ -48,7 +54,8 @@ public class ResumesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Resume>> UpdateResume(int id, Resume resume)
     {
-        var existingResume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var existingResume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
         if (existingResume == null)
         {
@@ -66,7 +73,8 @@ public class ResumesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteResume(int id)
     {
-        var resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
         if (resume == null)
         {

@@ -9,4 +9,6 @@ public class Interaction
 
     // Foreign Key to link back to the Application
     public int ApplicationId { get; set; }
+
+    public string? UserId { get; set; }
 }

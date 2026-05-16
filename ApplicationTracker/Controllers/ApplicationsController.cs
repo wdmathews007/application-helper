@@ -3,6 +3,7 @@ using ApplicationTracker.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ApplicationTracker.Controllers;
 
@@ -21,14 +22,16 @@ public class ApplicationsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
     {
-        return Ok(await _context.Applications.ToListAsync());
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Ok(await _context.Applications.Where(a => a.UserId == userId).ToListAsync());
     }
 
     // GET: api/Applications/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Application>> GetApplication(int id)
     {
-        var application = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var application = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
         if (application == null)
         {
@@ -41,6 +44,9 @@ public class ApplicationsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Application>> CreateApplication(Application application)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        application.UserId = userId;
+
         _context.Applications.Add(application);
         await _context.SaveChangesAsync();
 
@@ -49,7 +55,8 @@ public class ApplicationsController : ControllerBase
             ApplicationId = application.Id,
             InteractionDate = application.DateApplied,
             Type = "Applied",
-            Notes = "Initial application submitted."
+            Notes = "Initial application submitted.",
+            UserId = userId
         };
         _context.Interactions.Add(interaction);
         await _context.SaveChangesAsync();
@@ -60,7 +67,8 @@ public class ApplicationsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Application>> UpdateApplication(int id, Application application)
     {
-        var existingApplication = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var existingApplication = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
         if (existingApplication == null)
         {
@@ -84,7 +92,8 @@ public class ApplicationsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteApplication(int id)
     {
-        var application = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var application = await _context.Applications.FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
         if (application == null)
         {
