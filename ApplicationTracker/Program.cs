@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +26,7 @@ builder.Services.AddCors(options =>
 
 // Register the ApplicationDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOptions => sqlOptions.EnableRetryOnFailure()));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 1. Add Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -56,6 +55,26 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+app.Logger.LogInformation("Application starting up...");
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        var error = context.Features.Get<IExceptionHandlerFeature>();
+        if (error != null)
+        {
+            await context.Response.WriteAsJsonAsync(new 
+            { 
+                message = error.Error.Message,
+                stackTrace = error.Error.StackTrace
+            });
+        }
+    });
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,15 +91,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// 4. Seed the initial user
+// Auto-apply migrations for SQLite on startup
 using (var scope = app.Services.CreateScope())
 {
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    if (await userManager.FindByEmailAsync("admin@example.com") == null)
-    {
-        var user = new IdentityUser { UserName = "admin@example.com", Email = "admin@example.com" };
-        await userManager.CreateAsync(user, "SuperSecret123!");
-    }
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
 }
 
 app.Run();

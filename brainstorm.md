@@ -29,8 +29,8 @@ Nice to Have: DevOps, RabbitMQ, Cross-Functional
 - [x] Deploy API and Database to Azure
 
 ### Phase 3: DevOps & Automation - [CI/CD, DevOps, RabbitMQ]
-- [ ] Create a GitHub Actions workflow to build and test code on push (CI)
-- [ ] Expand GitHub Actions to automatically deploy to Azure on merge to main (CD)
+- [x] Create a GitHub Actions workflow to build and test code on push (CI)
+- [x] Expand GitHub Actions to automatically deploy to Azure on merge to main (CD)
 - [ ] Implement RabbitMQ queue for asynchronous job description web scraping
 - [ ] Create a scheduled worker (Azure Function) for follow-up reminders
 

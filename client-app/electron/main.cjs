@@ -11,7 +11,7 @@ function createWindow() {
   const windowWidth = 450;
   const windowHeight = 750;
 
-  const iconPath = path.join(__dirname, app.isPackaged ? '../dist/favicon.ico' : '../public/favicon.ico');
+  const iconPath = path.join(__dirname, app.isPackaged ? '../dist/icon.png' : '../public/icon.png');
 
   mainWindow = new BrowserWindow({
     width: windowWidth,
@@ -39,7 +39,7 @@ function createWindow() {
 }
 
 function createTray() {
-  const iconPath = path.join(__dirname, app.isPackaged ? '../dist/favicon.ico' : '../public/favicon.ico');
+  const iconPath = path.join(__dirname, app.isPackaged ? '../dist/icon.png' : '../public/icon.png');
   const icon = nativeImage.createFromPath(iconPath);
   
   tray = new Tray(icon);
